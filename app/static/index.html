@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Pulse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0f172a',
+                        card: '#1e293b',
+                        accent: '#3b82f6',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        neutral: '#64748b'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: var(--tw-color-dark);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen relative overflow-hidden">
+
+    <!-- Background Decoration -->
+    <div
+        class="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob">
+    </div>
+    <div
+        class="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000">
+    </div>
+    <div
+        class="absolute -bottom-32 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000">
+    </div>
+
+    <div
+        class="glass p-8 rounded-2xl shadow-2xl w-full max-w-md z-10 transition-all duration-300 hover:shadow-blue-500/20">
+        <div class="text-center mb-8">
+            <h1
+                class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                Sentiment Pulse</h1>
+            <p class="text-gray-400 mt-2 text-sm">Real-time Emotional Intelligence</p>
+        </div>
+
+        <div class="space-y-6">
+            <div class="relative group">
+                <textarea id="inputFiles" rows="4" maxlength="250"
+                    class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none placeholder-gray-500 group-hover:bg-gray-800/80"
+                    placeholder="Paste your caption or tweet here (max 250 chars)..."></textarea>
+                <div class="absolute bottom-3 right-3 text-xs text-gray-500" id="charCount">0/250</div>
+            </div>
+
+            <button onclick="analyzeSentiment()"
+                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-2 group">
+                <span>Analyze Sentiment</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:rotate-12"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result" class="mt-8 hidden opacity-0 transition-opacity duration-500">
+            <div class="p-4 rounded-xl border border-dashed border-gray-600 bg-gray-800/30 text-center">
+                <p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Detected Vibe</p>
+                <h2 id="sentimentValue" class="text-3xl font-black tracking-tight"></h2>
+
+                <div id="emoji" class="text-6xl mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('inputFiles');
+        input.addEventListener('input', (e) => {
+            const len = e.target.value.length;
+            document.getElementById('charCount').textContent = `${len}/250`;
+        });
+
+        async function analyzeSentiment() {
+            const text = input.value;
+            if (!text.trim()) return;
+
+            const btn = document.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sentence: text })
+                });
+
+                const data = await response.json();
+                displayResult(data.prediction);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert("Something went wrong with the AI brain!");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function displayResult(sentiment) {
+            const resultDiv = document.getElementById('result');
+            const valueDiv = document.getElementById('sentimentValue');
+            const emojiDiv = document.getElementById('emoji');
+
+            resultDiv.classList.remove('hidden');
+            // Trigger reflow
+            void resultDiv.offsetWidth;
+            resultDiv.classList.remove('opacity-0');
+
+            valueDiv.innerText = sentiment;
+
+            // Color Mapping & Simple Emojis
+            let colorClass = 'text-white';
+            let emoji = '😐';
+
+            if (sentiment === 'Positive') {
+                colorClass = 'text-green-400';
+                emoji = '🙂';
+            } else if (sentiment === 'Negative') {
+                colorClass = 'text-red-400';
+                emoji = '🙁';
+            } else {
+                colorClass = 'text-blue-300';
+                emoji = '😐';
+            }
+
+            valueDiv.className = `text-3xl font-black tracking-tight ${colorClass}`;
+            emojiDiv.innerText = emoji;
+        }
+    </script>
+</body>
+
+</html>

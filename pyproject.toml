@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "caption-sentiment-analysis"
+version = "0.1.0"
+description = "Caption Sentiment Analysis"
+authors = [
+    { name = "Shyam Sunder", email = "shyam10kwd@gmail.com" }
+]
+requires-python = ">=3.8"
+
+dependencies = [
+    "torch",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "mlflow",
+    "pip>=25.0.1",
+    "sentence-transformers>=3.2.1",
+    "onnxscript>=0.2.7",
+    "onnxruntime>=1.20.1",
+    "seaborn>=0.13.2",
+    "matplotlib>=3.7.5",
+]

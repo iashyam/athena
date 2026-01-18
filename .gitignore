@@ -3,6 +3,17 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Data files
+data/
+mlruns
+*.onnx
+onnx.data
+mlflow.db
+mlflow.db-journal
+.production
+uv.lock
+*.png
+
 # C extensions
 *.so
 
