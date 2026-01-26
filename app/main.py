@@ -26,7 +26,6 @@ mlflow.set_registry_uri("databricks-uc")
 
 try:
     client = MlflowClient()
-    # Get the latest version programmatically since 'latest' keyword is not supported in UC
     versions = client.search_model_versions(f"name='{model_name}'")
     if not versions:
         raise Exception(f"No versions found for model {model_name}")
@@ -35,24 +34,16 @@ try:
     model_uri = f"models:/{model_name}/{latest_version}"
 except Exception as e:
     print(f"Error finding latest model version: {e}")
-    # Fallback or re-raise
     raise e
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Load the ML model
     print("Initializing models...")
-    try:
-        local_path = mlflow.artifacts.download_artifacts(model_uri)
-        # mlflow.onnx.log_model saves the model file as "model.onnx" inside the artifact directory
-        model_path = os.path.join(local_path, "model.onnx")
-        print(f"Model downloaded to: {model_path}")
-        model_wrapper["model"] = SentimentModel(model_path)
-    except Exception as e:
-        print(f"Failed to load model: {e}")
-        raise e
+    local_path = mlflow.artifacts.download_artifacts(model_uri)
+    model_path = os.path.join(local_path, "model.onnx")
+    print(f"Model downloaded to: {model_path}")
+    model_wrapper["model"] = SentimentModel(model_path)
     yield
-    # Clean up the ML models and release the resources
     model_wrapper.clear()
 
 app = FastAPI(lifespan=lifespan)
