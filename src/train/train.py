@@ -93,7 +93,8 @@ def train_loop(
     device: torch.device,
     num_epochs: int = 10,
     run_name: str = "Training Run",
-    model_name: str = "SentimentModel"
+    model_name: str = "SentimentModel",
+    register: bool = False
 ):
     # Start MLflow run
     with mlflow.start_run(run_name=run_name):
@@ -137,6 +138,6 @@ def train_loop(
         x, _ = next(iter(train_loader))
         
         model_name = f"workspace.default.{model_name}"
-        export_to_onnx(model, x, model_name=model_name)
+        if register: export_to_onnx(model, x, model_name=model_name)
         
     return model
