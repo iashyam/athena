@@ -10,6 +10,9 @@ import mlflow.onnx
 import time
 from typing import Tuple
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 mlflow.set_tracking_uri("databricks")
 mlflow.set_registry_uri("databricks-uc")
