@@ -6,7 +6,8 @@ __pycache__/
 
 .DS_Store
 # Data files
-data/
+# data/
+.data/
 mlruns
 *.onnx
 onnx.data

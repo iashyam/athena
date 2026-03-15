@@ -1,0 +1,22 @@
+data:
+  train_csv: ".data/train_df.csv"
+  val_csv: ".data/val_df.csv"
+  test_csv: ".data/test_df.csv"
+
+embeddings:
+  model_name: "all-MiniLM-L6-v2"
+  train_cache: ".data/train_embeddings.pt"
+  val_cache: ".data/val_embeddings.pt"
+  test_cache: ".data/test_embeddings.pt"
+
+model:
+  hidden_dim: 128
+
+training:
+  batch_size: 64
+  epochs: 10
+  learning_rate: 0.01
+  weight_decay: 1e-5
+  device: "cpu"
+  run_name: "Augmented_Data_Pretrained_Embeddings_Run_small_epochs"
+  model_name: "NN_With_Augmentation_ONNX"
