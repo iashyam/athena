@@ -31,7 +31,7 @@ def train_val_test_split(dataset, train_ratio=0.7, val_ratio=0.2, test_ratio=0.1
    
 
 BATCH_SIZE = 64
-EPOCHS = 20
+EPOCHS = 10
 
 def main():
     # Attempt to download the data if it's missing
@@ -80,10 +80,11 @@ def main():
 
     # Evaluation
     print("\nRunning Evaluation...")
-    from src.utils.evaluation import plot_confusion_matrix
+    from src.utils.evaluation import plot_confusion_matrix, calculate_validation_accuracy
     # Class names in alphabetical order (as per cat.codes)
     # class_names = ['Anger', 'Calm', 'Curiosity', 'Fear', 'Hope', 'Joy', 'Love', 'Sadness', 'Shame', 'Surprise']
     plot_confusion_matrix(model, test_loader, "cpu",[str(i) for i in range(num_classes)])
+    calculate_validation_accuracy(model, val_loader, "cpu")
 
 if __name__ == "__main__":
     main()
