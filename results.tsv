@@ -1,0 +1,10 @@
+commit	val_acc	status	description
+1784f05	0.729107	keep	Exp 5: 2-layer Transformer
+a34ec59	0.728100	discard	Exp 6: hidden_dim 512, lr 0.0005, 5 epochs (overfit)
+7153f44	0.734700	keep	Exp 7: n_head 12, hidden_dim 512, ep 4, lr 0.0005
+992f703	0.731600	discard	Exp 8: 3 layers, 3 epochs, hidden_dim 512, n_head 12
+992f703	0.729300	discard	Exp 9: hidden_dim 1024, 3 epochs, n_head 12 (overfit)
+92795e1	0.720300	discard	Exp 11: 3 layers, 3 epochs, 0.3 dropout, hidden_dim 512
+905666b	0.720800	discard	Exp 12: hidden_dim 512, 4 epochs, lr 0.001 (overfit)
+5e0b3d9	0.737900	keep	Exp 13: max_seq_len 64, 3 epochs, hidden_dim 512 (slightly over 15 mins)
+992f703	0.737600	discard	Exp 14: norm_first=True, 3 epochs, L=64, hidden_dim 512

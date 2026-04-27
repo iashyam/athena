@@ -10,6 +10,6 @@ COPY ./app ./app
 # COPY ./model.onnx .
 # COPY ./model.onnx.data .
 
-EXPOSE 5911
+EXPOSE 2025
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5911"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "2025"]
