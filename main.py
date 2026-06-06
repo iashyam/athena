@@ -12,6 +12,7 @@ from torch.optim import Adam
 from torch.utils.data import random_split
 
 from src.data.download_data import download_data
+from src.utils.evaluation import plot_confusion_matrix, calculate_validation_accuracy
 import yaml
 
 # Load parameters
@@ -91,10 +92,11 @@ def main():
 
     # Evaluation
     print("\nRunning Evaluation...")
-    from src.utils.evaluation import plot_confusion_matrix, calculate_validation_accuracy
     # Class names in alphabetical order (as per cat.codes)
     plot_confusion_matrix(model, test_loader, config['training']['device'], [str(i) for i in range(num_classes)])
-    calculate_validation_accuracy(model, val_loader, config['training']['device'])
+    val_acc = calculate_validation_accuracy(model, val_loader, config['training']['device'])
+    with open("accuracy.log", 'a') as f:
+        f.write(f'{val_acc}\n')
 
 if __name__ == "__main__":
     main()

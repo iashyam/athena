@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Set Databricks credentials for MLflow
-os.environ["DATABRICKS_HOST"] = os.environ.get("MLFLOW_URI")
-os.environ["DATABRICKS_TOKEN"] = os.environ.get("databricks_token")
+os.environ["DATABRICKS_HOST"] = os.environ.get("DATABRICKS_HOST")
+os.environ["DATABRICKS_TOKEN"] = os.environ.get("DATABRICKS_TOKEN")
 
 # Define global model variable
 model_wrapper = {}

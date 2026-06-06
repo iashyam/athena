@@ -4,10 +4,12 @@ __pycache__/
 *$py.class
 
 
+prod
 .DS_Store
 # Data files
 # data/
 .data/
+.prod
 mlruns
 *.onnx
 onnx.data

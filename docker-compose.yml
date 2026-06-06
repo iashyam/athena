@@ -1,0 +1,35 @@
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 2025:2025
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABRICKS_TOKEN=${DATABRICKS_TOKEN}
+      - DATABRICKS_HOST=${DATABRICKS_HOST}
+      
+
+  # caddy:
+  #   image: caddy:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80" # Exposed locally for testing, optional
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   depends_on:
+  #     - app
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+
+# volumes:
+#   caddy_data:
+#   caddy_config:
